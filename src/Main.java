@@ -151,17 +151,21 @@ public class Main {
 
                 }
             }else {
-                System.out.println("Enter a store name: ");
-                String sessionStoreName = scan.nextLine();
-                for (Store store : brand.getStores()) {
-                    storeSessionIndex++;
-                    if (sessionStoreName.equals(store.getStoreName())) {
-                        break;
+                boolean storeExists = false;
+
+                while (!storeExists) {
+                    System.out.print("Enter a store name: ");
+                    String sessionStoreName = scan.nextLine();
+                    storeSessionIndex = 0;
+                    for (Store store : brand.getStores()) {
+                        if (sessionStoreName.equals(store.getStoreName())) {
+                            storeExists = true;
+                            break;
+                        }
+                        storeSessionIndex++;
                     }
-                    else{
-                        System.out.println("Store not found!");
-                        storeSessionIndex = -1;
-                        break;
+                    if (!storeExists) {
+                        System.out.println("\nStore not found! Try again.");
                     }
                 }
                 while(sessionContinue) {
