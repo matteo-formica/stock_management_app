@@ -44,7 +44,7 @@ public class Store implements Serializable {
 
     public String toString()
     {
-        return "Name: " + storeName + ", Address: " + storeAddress + ", Phone: " + storePhone;
+        return "Name: " + storeName + " | Address: " + storeAddress + " | Phone: " + storePhone;
     }
 
 }

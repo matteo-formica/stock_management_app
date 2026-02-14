@@ -98,6 +98,6 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "ID: " + id + ", Name: " + name + "Size: " + size + ", PackageType: " + packageType + ", Type: " + type + "VAT: " + vat +"%"+ "B2B Price: " + b2bPrice + "€ " + "B2C Price: " + b2cPrice+ "€";
+        return "ID: " + id + " | Name: " + name + " | Size: " + size + " | PackageType: " + packageType + " | Type: " + type + " | VAT: " + vat +"%"+ " | B2B Price: " + b2bPrice + "€ " + " | B2C Price: " + b2cPrice+ "€";
     }
 }

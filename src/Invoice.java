@@ -1,13 +1,15 @@
 
 import java.io.Serializable;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Invoice implements Serializable{
     public String invoiceNumber;
     public String invoiceType;
-    public Calendar invoiceDate;
+    public LocalDate invoiceDate;
     public String customerType;
     public Map<Product, Integer> invoiceProducts;
     public double invoiceTotal;
@@ -15,11 +17,11 @@ public class Invoice implements Serializable{
     public double vat10 = 0;
     public double vat22 = 0;
     public double totalVAT = 0;
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final long serialVersionUID = 1L;
 
     public Invoice(String invoiceNumber,String customerType, String invoiceType) {
         this.invoiceNumber = invoiceNumber;
-        this.invoiceDate = Calendar.getInstance();
         this.customerType = customerType;
         this.invoiceType = invoiceType;
         this.invoiceProducts = new HashMap<>();
@@ -41,7 +43,10 @@ public class Invoice implements Serializable{
     }
 
     public String getInvoiceDate() {
-        return "Date: " + invoiceDate.get(Calendar.DATE);
+        return String.format("Date: " + this.invoiceDate.format(formatter));
+    }
+    public void setInvoiceDate(LocalDate invoiceDate) {
+        this.invoiceDate = invoiceDate;
     }
 
     public String getInvoiceType() {
@@ -60,6 +65,19 @@ public class Invoice implements Serializable{
         Invoice invoice = new Invoice(id, customerType, invoiceType);
         boolean add = true;
         Scanner scan = new Scanner(System.in);
+        System.out.print("Enter Invoice Date (dd-MM-yyyy): ");
+        boolean valid = false;
+        while(!valid) {
+            try {
+                LocalDate invoiceDate = LocalDate.parse(scan.nextLine(), formatter);
+                invoice.setInvoiceDate(invoiceDate);
+                valid = true;
+            }catch(DateTimeParseException e) {
+                valid = false;
+                System.out.println("Invalid format");
+
+            }
+        }
         while(add) {
             if (invoice.invoiceType.equals("Incoming")) {
                 System.out.print("Lot id: ");
@@ -70,21 +88,25 @@ public class Invoice implements Serializable{
                 System.out.print("Product amount: ");
                 int amount = Integer.parseInt(scan.nextLine());
                 for (Product product : priceList.productsPriceList){
-                    if (product.getId() == productID){
-                       product1 =  product;
+                    if (product.getId() == productID) {
+                        product1 = product;
                         System.out.print("Lot Date(dd-MM-yyyy): ");
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                        try {
-                            Date date = sdf.parse(scan.nextLine());
-                            Calendar lotDate = Calendar.getInstance();
-                            lotDate.setTime(date);
-                            invoice.addProductToIncomingInvoice(lotId, lotDate, product1, amount, stock);
-                        }catch(ParseException e) {
-                            System.out.println("Invalid date format");
+                        boolean valid1 = false;
+                        while (!valid1) {
+                            try {
+                                LocalDate lotDate = LocalDate.parse(scan.nextLine(), formatter);
+                                invoice.addProductToIncomingInvoice(lotId, lotDate, product1, amount, stock);
+                                valid1 = true;
+                            } catch (DateTimeParseException e) {
+                                valid1 = false;
+                                System.out.println("Invalid date format");
+
+                            }
                         }
 
-                    }else{
-                        System.out.println("Invalid product name");
+                        }else{
+                            System.out.println("Invalid product ID");
+
                     }
                 }
             }
@@ -125,7 +147,7 @@ public class Invoice implements Serializable{
         }
     }
 
-    public void addProductToIncomingInvoice(String id, Calendar date, Product product, int amount, Stock stock) {
+    public void addProductToIncomingInvoice(String id, LocalDate date, Product product, int amount, Stock stock) {
         this.invoiceProducts.put(product, amount);
         if (this.invoiceType.equals("Incoming")){
             Lot lot = new Lot(id,date, product, amount);
@@ -199,6 +221,7 @@ public class Invoice implements Serializable{
 
     public String toString(){
         String str = "";
+        str += "Invoice N°: " + invoiceNumber + "\n" + invoiceDate.format(formatter) + "\n";
         for (Product product : this.invoiceProducts.keySet()) {
             str = str + product.toString() + " | " +  this.invoiceProducts.get(product) + "\n";
         }

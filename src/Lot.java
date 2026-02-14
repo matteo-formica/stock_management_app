@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class Lot implements Serializable {
     String id;
-    Calendar date;
+    LocalDate date;
     Map<Product, Integer> products;
     private static final long serialVersionUID = 1L;
 
 
-    public Lot(String id, Calendar date, Product product, int quantity) {
+    public Lot(String id, LocalDate date, Product product, int quantity) {
         this.id = id;
         this.date = date;
         products = new HashMap<>();
@@ -27,11 +27,11 @@ public class Lot implements Serializable {
         this.id = id;
     }
 
-    public Calendar getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Calendar date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -58,7 +58,7 @@ public class Lot implements Serializable {
     public String toString(){
         String str = "";
         str += "Lot ID: " + this.id + " | ";
-        str += "Date: " + this.date + " | ";
+        str += "Date: " + this.date.format(Invoice.formatter) + " | ";
         for (Product product : this.products.keySet()) {
             str += "Product ID: " + product.getId() + " | ";
             str += "Quantity: " + this.products.get(product);

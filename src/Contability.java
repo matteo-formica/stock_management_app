@@ -62,20 +62,20 @@ public class Contability implements Serializable {
         double income = this.getIncomeAmount();
         double exits =  this.getExitsAmount();
         double vat = this.getVatAmount();
-        return "Income: " + income + "€" + "Exits: " + exits + "€" + "Total Vat: " + vat;
+        return "Income: " + income + "€ | " + "Exits: " + exits + "€ | " + "Total Vat: " + vat;
 
     }
 
     public void getStoreTotalOverview(){
         String moneyOverview = this.getStoreMoneyOverview();
-        System.out.println("Money Overview: " + moneyOverview);
+        System.out.println("Money Overview: \n" + moneyOverview);
         System.out.println("Outgoing Invoices: ");
         for (Invoice invoice: this.outgoingInvoices) {
-            System.out.println("Invoice ID:" + invoice.getInvoiceNumber() + "Date: " +  invoice.getInvoiceDate()+ "Total: " +  invoice.getTotal());
+            System.out.println("Invoice ID: " + invoice.getInvoiceNumber() + " | " +  invoice.getInvoiceDate()+ " | Total: " +  invoice.getTotal());
         }
         System.out.println("Incoming Invoices: ");
         for (Invoice invoice: this.incomingInvoices) {
-            System.out.println("Invoice ID:" + invoice.getInvoiceNumber() + "Date: " +  invoice.getInvoiceDate()+ "Total: " +  invoice.getTotal());
+            System.out.println("Invoice ID: " + invoice.getInvoiceNumber() + " | " + invoice.getInvoiceDate()+ " | Total: " +  invoice.getTotal());
         }
     }
 }

@@ -164,57 +164,60 @@ public class Main {
                         break;
                     }
                 }
-                System.out.println("Welcome back to " + brand.getStores().get(storeSessionIndex).getStoreName() + " Store Dashboard!");
-                System.out.println("\nMenu");
-                System.out.println("1. View Store Information");
-                System.out.println("2. View Price list");
-                System.out.println("3. New Invoice");
-                System.out.println("4. View Stock");
-                System.out.println("5. View Money Overview");
-                System.out.println("6. View Total Overview");
-                System.out.println("7. Exit");
-                System.out.print("Action: ");
-                switch (Integer.parseInt(scan.nextLine())){
-                    case 1:
-                        System.out.println("View Store Information");
-                        System.out.println((brand.getStores().get(storeSessionIndex)));
-                    case 2:
-                        System.out.println("View Price list");
-                        System.out.print(priceList.toString());
-                        break;
-                    case 3:
-                        System.out.println("New Invoice");
-                        System.out.print("Enter Invoice ID: ");
-                        String invoiceID = scan.nextLine();
-                        System.out.print("\nCustomer Type: ");
-                        String customerType = scan.nextLine();
-                        System.out.print("\nInvoice Type (Incoming/Outgoing): ");
-                        String invoiceType = scan.nextLine();
-                        Invoice.createInvoice(invoiceID, customerType, invoiceType, (brand.getStores().get(storeSessionIndex).storeStock), priceList, (brand.getStores().get(storeSessionIndex).storeContability));
-                        break;
-                    case 4:
-                        System.out.print("View Stock");
-                        System.out.print((brand.getStores().get(storeSessionIndex)).storeStock.toString());
-                        break;
-                    case 5:
-                        System.out.print("View Money Overview");
-                        System.out.print(((brand.getStores().get(storeSessionIndex)).storeContability).getStoreMoneyOverview());
-                        break;
-                    case 6:
-                        (brand.getStores().get(storeSessionIndex)).storeContability.getStoreTotalOverview();
-                        break;
-                    case 7:
-                        if(session.manager.isMaster()) {
-                            sessionContinue = false;
-                            storeAccess = false;
-                            storeSessionIndex = 0;
-                        }else {
-                            sessionContinue = false;
-                            programContinue = false;
-                            System.out.println("Saving...");
-                            PersistenceManager.saveData(priceList.productsPriceList, brand);
-                            System.out.println("Exit");
-                        }
+                while(sessionContinue) {
+                    System.out.println("Welcome back to " + brand.getStores().get(storeSessionIndex).getStoreName() + " Store Dashboard!");
+                    System.out.println("\nMenu");
+                    System.out.println("1. View Store Information");
+                    System.out.println("2. View Price list");
+                    System.out.println("3. New Invoice");
+                    System.out.println("4. View Stock");
+                    System.out.println("5. View Money Overview");
+                    System.out.println("6. View Total Overview");
+                    System.out.println("7. Exit");
+                    System.out.print("Action: ");
+                    switch (Integer.parseInt(scan.nextLine())) {
+                        case 1:
+                            System.out.println("View Store Information");
+                            System.out.println((brand.getStores().get(storeSessionIndex)));
+                            break;
+                        case 2:
+                            System.out.println("View Price list");
+                            System.out.print(priceList.toString());
+                            break;
+                        case 3:
+                            System.out.println("New Invoice");
+                            System.out.print("Enter Invoice ID: ");
+                            String invoiceID = scan.nextLine();
+                            System.out.print("\nCustomer Type: ");
+                            String customerType = scan.nextLine();
+                            System.out.print("\nInvoice Type (Incoming/Outgoing): ");
+                            String invoiceType = scan.nextLine();
+                            Invoice.createInvoice(invoiceID, customerType, invoiceType, (brand.getStores().get(storeSessionIndex).storeStock), priceList, (brand.getStores().get(storeSessionIndex).storeContability));
+                            break;
+                        case 4:
+                            System.out.println("View Stock");
+                            System.out.print((brand.getStores().get(storeSessionIndex)).storeStock.toString());
+                            break;
+                        case 5:
+                            System.out.println("View Money Overview");
+                            System.out.print(((brand.getStores().get(storeSessionIndex)).storeContability).getStoreMoneyOverview());
+                            break;
+                        case 6:
+                            (brand.getStores().get(storeSessionIndex)).storeContability.getStoreTotalOverview();
+                            break;
+                        case 7:
+                            if (session.manager.isMaster()) {
+                                sessionContinue = false;
+                                storeAccess = false;
+                                storeSessionIndex = 0;
+                            } else {
+                                sessionContinue = false;
+                                programContinue = false;
+                                System.out.println("Saving...");
+                                PersistenceManager.saveData(priceList.productsPriceList, brand);
+                                System.out.println("Exit");
+                            }
+                    }
                 }
             }
             }
