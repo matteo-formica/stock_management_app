@@ -11,7 +11,7 @@ public class PriceList implements Serializable {
         productsPriceList = new ArrayList<>();
     }
 
-    public void addProduct(int id, String name, String size, String packageType, String type, int vat,double buyPrice, double b2bPrice, double b2cPrice) {
+    public void addProduct(int id, String name, int size, String unit, String packageType, String type, int vat,double buyPrice, double b2bPrice, double b2cPrice) {
         boolean exists = false;
         for (Product p : this.productsPriceList) {
             if (p.getId() == id && p.getName().equals(name)) {
@@ -22,7 +22,7 @@ public class PriceList implements Serializable {
         if (exists) {
             System.out.println("This product already exists!");
         } else {
-            Product product = new Product(id, name, size, packageType, type, vat, buyPrice, b2bPrice, b2cPrice);
+            Product product = new Product(id, name, size, unit, packageType, type, vat, buyPrice, b2bPrice, b2cPrice);
             this.productsPriceList.add(product);
         }
     }

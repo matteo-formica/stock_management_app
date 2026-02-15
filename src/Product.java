@@ -3,7 +3,8 @@ import java.io.Serializable;
 public class Product implements Serializable {
     private int id;
     private String name;
-    private String size;
+    private int size;
+    private String unit;
     private String packageType;
     private String type;
     private int vat;
@@ -12,10 +13,11 @@ public class Product implements Serializable {
     private double b2cPrice;
     private static final long serialVersionUID = 1L;
 
-    public Product(int id, String name, String size, String packageType, String type, int vat,double buyPrice, double b2bPrice, double b2cPrice) {
+    public Product(int id, String name, int size, String unit, String packageType, String type, int vat,double buyPrice, double b2bPrice, double b2cPrice) {
         this.id = id;
         this.name = name;
         this.size = size;
+        this.unit = unit;
         this.packageType = packageType;
         this.type = type;
         this.vat = vat;
@@ -40,12 +42,19 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public String getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(int size) {
         this.size = size;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getPackageType() {
@@ -98,6 +107,6 @@ public class Product implements Serializable {
 
     @Override
     public String toString() {
-        return "ID: " + id + " | Name: " + name + " | Size: " + size + " | PackageType: " + packageType + " | Type: " + type + " | VAT: " + vat +"%"+ " | B2B Price: " + b2bPrice + "€ " + " | B2C Price: " + b2cPrice+ "€";
+        return "ID: " + id + " | Name: " + name + " | Size: " + size + unit + " | PackageType: " + packageType + " | Type: " + type + " | VAT: " + vat +"%"+ " | B2B Price: " + b2bPrice + "€ " + " | B2C Price: " + b2cPrice+ "€";
     }
 }

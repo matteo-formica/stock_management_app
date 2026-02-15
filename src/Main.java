@@ -75,8 +75,9 @@ public class Main {
                 switch (action) {
                     case 1:
                         System.out.println("Store creation");
-                        System.out.print("\nStore Name: ");
+                        System.out.print("\nStore Name (Type 'exit' to exit: ");
                         String storeName = scan.nextLine();
+                        if(storeName.equals("exit")){break;}
                         System.out.print("\nAddress: ");
                         String storeAddress = scan.nextLine();
                         System.out.print("\nPhone number: ");
@@ -86,8 +87,9 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("Manager creation");
-                        System.out.print("\nManager Name: ");
+                        System.out.print("\nManager Name (Type 'exit' to exit: ");
                         String managerName = scan.nextLine();
+                        if(managerName.equals("exit")){break;}
                         System.out.print("\nManager Password: ");
                         String managerPassword = scan.nextLine();
                         System.out.print("\nIt's a Master account? (true/false): ");
@@ -97,12 +99,15 @@ public class Main {
                         break;
                     case 3:
                         System.out.println("Add a Product");
-                        System.out.print("Enter Product ID: ");
+                        System.out.print("Enter Product ID (Enter 0 to exit): " );
                         int productID = Integer.parseInt(scan.nextLine());
+                        if(productID == 0){break;}
                         System.out.print("\nEnter Product Name: ");
                         String productName = scan.nextLine();
                         System.out.print("\nEnter Product Size: ");
-                        String productSize = scan.nextLine();
+                        int productSize = Integer.parseInt(scan.nextLine());
+                        System.out.print("\nEnter Product Unit (ml/g): ");
+                        String productUnit = scan.nextLine();
                         System.out.print("\nEnter Product Package Type: ");
                         String productPackageType = scan.nextLine();
                         System.out.print("\nEnter Product Type: ");
@@ -115,14 +120,15 @@ public class Main {
                         double b2bPrice = Double.parseDouble(scan.nextLine());
                         System.out.print("Enter Product B2C Price: ");
                         double b2cPrice = Double.parseDouble(scan.nextLine());
-                        priceList.addProduct(productID, productName, productSize, productPackageType, productType, productVAT, buyPrice, b2bPrice, b2cPrice);
+                        priceList.addProduct(productID, productName, productSize, productUnit, productPackageType, productType, productVAT, buyPrice, b2bPrice, b2cPrice);
                         System.out.println("Product ID: " + productID + " Added Successfully!");
                         System.out.println(priceList.getProduct(productID));
                         break;
                     case 4:
                         System.out.print("Delete a Product");
-                        System.out.print("Enter Product ID: ");
+                        System.out.print("Enter Product ID (Enter 0 to exit): ");
                         int id = Integer.parseInt(scan.nextLine());
+                        if(id == 0){break;}
                         priceList.deleteProduct(id);
                         System.out.println("Product ID: " + id + " Deleted Successfully!");
                         break;
@@ -136,10 +142,8 @@ public class Main {
                         storeAccess = true;
                         break;
                     case 8:
-                        System.out.println("View Money Overview");
-                        break;
-                    case 9:
-                        System.out.println("View Total Overview");
+                        System.out.println("Brand Accounting Overview");
+                        System.out.println(brand.brandAccounting);
                         break;
                     case 10:
                         sessionContinue = false;
@@ -190,24 +194,34 @@ public class Main {
                             break;
                         case 3:
                             System.out.println("New Invoice");
-                            System.out.print("Enter Invoice ID: ");
+                            System.out.print("Enter Invoice ID (Type 'exit' to exit): ");
                             String invoiceID = scan.nextLine();
+                            if(invoiceID.equals("exit")){break;}
                             System.out.print("\nCustomer Type: ");
                             String customerType = scan.nextLine();
                             System.out.print("\nInvoice Type (Incoming/Outgoing): ");
                             String invoiceType = scan.nextLine();
-                            Invoice.createInvoice(invoiceID, customerType, invoiceType, (brand.getStores().get(storeSessionIndex).storeStock), priceList, (brand.getStores().get(storeSessionIndex).storeContability));
+                            int i = Invoice.createInvoice(invoiceID, customerType, invoiceType, (brand.getStores().get(storeSessionIndex).storeStock), priceList, (brand.getStores().get(storeSessionIndex).storeAccounting));
+                            if(i==1){
+                                brand.brandAccounting.addStoresOutcome(((brand.getStores().get(storeSessionIndex)).getStoreName()), ((brand.getStores().get(storeSessionIndex)).storeAccounting.storeOutcome));
+                            }
+                            else{
+                                brand.brandAccounting.addStoresIncome(((brand.getStores().get(storeSessionIndex)).getStoreName()), ((brand.getStores().get(storeSessionIndex)).storeAccounting.storeIncome));
+                                brand.brandAccounting.incrementProductQuantity(brand.getStores().get(storeSessionIndex));
+                                brand.brandAccounting.incrementProductVolume(brand.getStores().get(storeSessionIndex));
+                            }
                             break;
                         case 4:
                             System.out.println("View Stock");
                             System.out.print((brand.getStores().get(storeSessionIndex)).storeStock.toString());
                             break;
                         case 5:
-                            System.out.println("View Money Overview");
-                            System.out.print(((brand.getStores().get(storeSessionIndex)).storeContability).getStoreMoneyOverview());
+                            System.out.println((brand.getStores().get(storeSessionIndex)).getStoreName()+ " Money Overview");
+                            System.out.print(((brand.getStores().get(storeSessionIndex)).storeAccounting).getStoreMoneyOverview());
                             break;
                         case 6:
-                            (brand.getStores().get(storeSessionIndex)).storeContability.getStoreTotalOverview();
+                            System.out.println((brand.getStores().get(storeSessionIndex)).getStoreName()+ " Total Accounting Overview");
+                            (brand.getStores().get(storeSessionIndex)).storeAccounting.getStoreTotalOverview();
                             break;
                         case 7:
                             if (session.manager.isMaster()) {
@@ -226,7 +240,5 @@ public class Main {
             }
             }
         }
-
-
     }
 }

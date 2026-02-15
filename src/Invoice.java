@@ -61,8 +61,9 @@ public class Invoice implements Serializable{
         return invoiceProducts;
     }
 
-    public static void createInvoice(String id,String customerType, String invoiceType, Stock stock, PriceList  priceList, Contability contability) {
+    public static int createInvoice(String id,String customerType, String invoiceType, Stock stock, PriceList  priceList, Accounting storeAccounting) {
         Invoice invoice = new Invoice(id, customerType, invoiceType);
+        int incOrOut = 0;
         boolean add = true;
         Scanner scan = new Scanner(System.in);
         System.out.print("Enter Invoice Date (dd-MM-yyyy): ");
@@ -123,6 +124,8 @@ public class Invoice implements Serializable{
                             if(product1.getId() == productId && !(lot.getProduct() == null)){
                                 lot.subtractProducts(product1, amount);
                                 invoice.addProductToOutgoingInvoice(product1, amount);
+                                storeAccounting.incrementProductQuantity(product1.getName(), amount);
+                                storeAccounting.incrementProductVolume(product1.getType(), (product1.getSize()*amount));
                             }
                         }
                     }
@@ -133,18 +136,26 @@ public class Invoice implements Serializable{
             String choice = scan.nextLine();
             if (choice.equals("n")) {
                 add = false;
-                invoice.invoiceTotal();
+                invoice.invoiceTotal(storeAccounting);
                 if(invoice.invoiceType.equals("Incoming")){
-                    contability.addIncomingInvoice(invoice);
+                    storeAccounting.addIncomingInvoice(invoice);
+                    storeAccounting.incrementOutcome(invoice.getTotal());
+                    System.out.println("Invoice created successfully");
+                    System.out.println("Invoice Summary: ");
+                    System.out.println(invoice);
+                    incOrOut = 1;
                 }
                 else{
-                    contability.addOutgoingInvoice(invoice);
+                    storeAccounting.addOutgoingInvoice(invoice);
+                    storeAccounting.incrementIncome(invoice.getTotal());
+                    System.out.println("Invoice created successfully");
+                    System.out.println("Invoice Summary: ");
+                    System.out.println(invoice);
                 }
-                System.out.println("Invoice created successfully");
-                System.out.println("Invoice Summary: ");
-                System.out.println(invoice);
+
             }
         }
+        return incOrOut;
     }
 
     public void addProductToIncomingInvoice(String id, LocalDate date, Product product, int amount, Stock stock) {
@@ -159,21 +170,24 @@ public class Invoice implements Serializable{
         this.invoiceProducts.put(product, amount);
     }
 
-    public void invoiceTotal() {
+    public void invoiceTotal(Accounting storeAccounting) {
         double total = 0;
         for (Product product : this.invoiceProducts.keySet()) {
             if(this.invoiceType.equals("Incoming")){
                 double productPrice = product.getBuyPrice();
-                double productVat = product.getBuyPrice() * product.getVat() / 100;
+                double productVat = (product.getBuyPrice() * product.getVat() / 100) * this.invoiceProducts.get(product);
                 switch (product.getVat()){
                     case 4:
                         this.vat4 += productVat;
+                        storeAccounting.storePaidVAT4 += productVat;
                         break;
                     case 10:
                         this.vat10 += productVat;
+                        storeAccounting.storePaidVAT10 += productVat;
                         break;
                     case 22:
                         this.vat22 += productVat;
+                        storeAccounting.storePaidVAT22 += productVat;
                 }
                 double productTotal = (productPrice+productVat) * this.invoiceProducts.get(product);
                 total += productTotal;
@@ -184,22 +198,26 @@ public class Invoice implements Serializable{
                 total += productTotal;
             } else {
                 double productPrice = product.getB2bPrice();
-                double productVat = product.getB2bPrice() * product.getVat() / 100;
+                double productVat = (product.getB2bPrice() * product.getVat() / 100) * this.invoiceProducts.get(product);
                 switch (product.getVat()){
                     case 4:
                         this.vat4 += productVat;
+                        storeAccounting.storeIncomeVAT4 += productVat;
                         break;
                     case 10:
                          this.vat10 += productVat;
+                        storeAccounting.storeIncomeVAT10 += productVat;
                         break;
                     case 22:
                         this.vat22 += productVat;
+                        storeAccounting.storeIncomeVAT10 += productVat;
                 }
                 double productTotal = (productPrice+productVat) * this.invoiceProducts.get(product);
                 total += productTotal;
             }
         }
         this.totalVAT = this.vat4 + this.vat10 + this.vat22;
+        storeAccounting.updateVAT();
         this.invoiceTotal = total;
     }
 

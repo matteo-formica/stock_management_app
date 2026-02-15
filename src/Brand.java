@@ -8,6 +8,7 @@ public class Brand implements Serializable {
     private String brandDescription;
     private ArrayList<Store> stores;
     private ArrayList<Manager> managers;
+    public BrandAccounting brandAccounting;
     private static final long serialVersionUID = 1L;
 
     public  Brand()
@@ -16,6 +17,7 @@ public class Brand implements Serializable {
         this.brandPassword = "";
         this.stores = new ArrayList<>();
         this.managers = new ArrayList<>();
+        this.brandAccounting = new BrandAccounting();
     }
 
     public String getBrandName() {

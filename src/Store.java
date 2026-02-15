@@ -6,9 +6,8 @@ public class Store implements Serializable {
     private String storeName;
     private String storeAddress;
     private int storePhone;
-    private ArrayList<Manager> storeManagers;
     public Stock storeStock;
-    public Contability storeContability;
+    public Accounting storeAccounting;
     private static final long serialVersionUID = 1L;
 
     public Store(String storeName, String storeAddress, int storePhone)
@@ -16,9 +15,8 @@ public class Store implements Serializable {
         this.storeName = storeName;
         this.storeAddress = storeAddress;
         this.storePhone = storePhone;
-        this.storeManagers = new ArrayList<>();
         this.storeStock = new Stock();
-        this.storeContability = new Contability();
+        this.storeAccounting = new Accounting();
     }
 
     public String getStoreName() {
